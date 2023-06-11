@@ -46,6 +46,7 @@ module JIT
         in :putobject
           operand = iseq.body.iseq_encoded[insn_index + 1]
           asm.mov(STACK[stack_size], operand)
+          stack_size += 1
         in :opt_plus
           recv = STACK[stack_size - 2]
           obj = STACK[stack_size - 1]
