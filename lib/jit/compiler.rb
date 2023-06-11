@@ -63,6 +63,15 @@ module JIT
           asm.add(recv, 1)
 
           stack_size -= 1
+        in :getlocal_WC_0
+          # Get EP
+          asm.mov(:rax, [CFP, C.rb_control_frame_t.offsetof(:ep)])
+
+          # Load the local variable
+          idx = iseq.body.iseq_encoded[insn_index + 1]
+          asm.mov(STACK[stack_size], [:rax, -idx * C.VALUE.size])
+
+          stack_size += 1
         in :leave
           asm.add(CFP, C.rb_control_frame_t.size)
           asm.mov([EC, C.rb_execution_context_t.offsetof(:cfp)], CFP)
