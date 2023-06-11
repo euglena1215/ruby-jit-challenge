@@ -12,7 +12,7 @@ module JIT
     # Size of the JIT buffer
     JIT_BUF_SIZE = 1024 * 1024
 
-    STACK = [:r8, :r9]
+    STACK = [:r8, :r9, :r10, :r11]
     EC = :rdi
     CFP = :rsi
 
@@ -53,6 +53,14 @@ module JIT
 
           asm.add(recv, obj)
           asm.sub(recv, 1)
+
+          stack_size -= 1
+        in :opt_minus
+          recv = STACK[stack_size - 2]
+          obj = STACK[stack_size - 1]
+
+          asm.sub(recv, obj)
+          asm.add(recv, 1)
 
           stack_size -= 1
         in :leave
